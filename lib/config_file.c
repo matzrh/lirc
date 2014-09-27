@@ -94,6 +94,7 @@ const struct flaglist all_flags[] = {
 	{"CONST_LENGTH", CONST_LENGTH},	/* remember to adapt warning
 					   message when changing this */
 	{"REPEAT_HEADER", REPEAT_HEADER},
+	{"REPEAT_PRE", REPEAT_PRE},
 	{NULL, 0},
 };
 

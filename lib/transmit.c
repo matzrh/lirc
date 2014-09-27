@@ -390,7 +390,7 @@ lirc_t send_buffer_sum()
 
 static int init_send_or_sim(struct ir_remote *remote, struct ir_ncode *code, int sim, int repeat_preset)
 {
-	int i, repeat = repeat_preset;
+	int i, repeat = repeat_preset, repeat_predata=0;
 
 	if (is_grundig(remote) || is_goldstar(remote) || is_serial(remote) || is_bo(remote)) {
 		if (!sim) {
@@ -416,7 +416,13 @@ init_send_loop:
 			send_header(remote);
 		}
 		send_repeat(remote);
-	} else {
+	} else if (repeat_predata || (remote->suppress_repeat && (remote->flags & REPEAT_PRE))) {
+		if (!repeat || !(remote->flags & NO_HEAD_REP))
+			send_header(remote);
+		send_pre(remote);
+		send_buffer.data = send_buffer._data;
+	}
+	else {
 		if (!is_raw(remote)) {
 			ir_code next_code;
 
@@ -509,8 +515,12 @@ init_send_loop:
 		send_space(remote->min_remaining_gap);
 		flush_send_buffer();
 		send_buffer.sum = 0;
-
-		repeat = 1;
+		if(!repeat_predata && (remote->flags & REPEAT_PRE) && has_pre(remote) && (remote->repeat_countdown==0)) {
+			repeat_predata = 1;
+			LOGPRINTF(1, "sending pre data again\n");
+		}
+		else
+			repeat = 1;
 		goto init_send_loop;
 	}
 	LOGPRINTF(3, "transmit buffer ready");

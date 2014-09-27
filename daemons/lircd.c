@@ -1102,6 +1102,9 @@ void dosigalrm(int sig)
 	    || (repeat_code->transmit_state != NULL && repeat_code->transmit_state->next == NULL)) {
 		repeat_remote->repeat_countdown--;
 	}
+	if ((repeat_remote->repeat_countdown == 0) && (repeat_remote->flags & REPEAT_PRE) && has_pre(repeat_remote)) {
+		repeat_remote->suppress_repeat=1;
+	}
 	if (send_ir_ncode(repeat_remote, repeat_code) && repeat_remote->repeat_countdown > 0) {
 		repeat_timer.it_value.tv_sec = 0;
 		repeat_timer.it_value.tv_usec = repeat_remote->min_remaining_gap;
@@ -1495,6 +1498,11 @@ int send_core(int fd, char *message, char *arguments, int once)
 	} else {
 		/* you've been warned, now we have a limit */
 		remote->repeat_countdown = repeat_max;
+	}
+	if ((remote->flags & REPEAT_PRE) && has_pre(remote)) {
+		remote->repeat_countdown++;
+		remote->suppress_repeat=0;
+		logprintf(LIRC_DEBUG, "REPEAT_PRE valid, rep count is %d", remote->repeat_countdown);
 	}
 	if (remote->repeat_countdown > 0 || code->next != NULL) {
 		repeat_remote = remote;

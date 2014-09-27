@@ -92,6 +92,8 @@ struct ir_ncode {
 	struct ir_code_node *transmit_state;
 };
 
+
+
 /*
   struct ir_remote
   defines the encoding of a remote control
@@ -129,6 +131,7 @@ struct ir_ncode {
 #define REPEAT_HEADER   0x8000	/**< header is also sent before repeat code */
 
 #define COMPAT_REVERSE  0x00010000	/**< compatibility mode for REVERSE flag */
+#define REPEAT_PRE	0x00020000
 
 /** stop repeating after 600 signals (approx. 1 minute)
  * update technical.html when changing this value
