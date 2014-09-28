@@ -16,6 +16,17 @@ Updated versions of lirc is available using the website http://lirc.org.
 
 ## Last version: 0.9.2
 
+## Comments on added "REPEAT_PRE" flag
+
+Whether the pre-data is repeated or the whole code is indicated with "remote->suppress_repeat" 
+being set to 1 for pre-data repeat and to 0 for whole code repeats.
+Not tested for short repeat gaps (< 10 ms) but code is there, in theory.
+If you apply the patch for this functionality, be aware that:
+- the tools, daemons, libs are normally installed under /usr/local/(s)bin|lib instead of usr/(sbin)|lib (as e.g. for Debian)
+- you may want to remove the original package distribution for lirc and change all paths in /etc/init.d/lirc etc. accordingly to /usr/local/(s)bin....
+- you may want to compile with --sysconfdir=/etc to keep your uevent setups etc. working, but this will overwrite /etc/lirc when installing!  So save your config files or manage with symbolic links or whatever...
+
+
 ## Build and install.
 
 More complete build and install instructions are available in the
